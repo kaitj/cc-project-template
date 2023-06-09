@@ -1,0 +1,10 @@
+{
+    "author": "Full name",
+    "author_email": "example@email.com",
+    "github": "user",
+    "project_name": "Example Project Name",
+    "__project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
+    "project_description": "A short project description",
+    "license": ["MIT", "BSD-3", "GNU GPL v3.0", "Other (please provide license file)"], 
+    "_format_line_length": "88"
+}

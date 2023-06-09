@@ -1,0 +1,97 @@
+[tool.poetry]
+name = "{{ cookiecutter.project_name }}"
+version = "0.0.0"
+description = "{{ cookiecutter.project_description }}"
+authors = [
+    "{{ cookiecutter.author }} <{{ cookiecutter.author_email }}>",
+]
+readme = "README.md"
+license = "{{ cookiecutter.license }}"
+documentation = "{{ cookiecutter.__project_slug }}.readthedocs.io/"
+repository = "https://github.com/{{ cookiecutter.github }}/{{ cookiecutter.__project_slug }}"
+include = ["{{ cookiecutter.__project_slug }}/py.typed"]
+packages = [
+  { include = "{{ cookiecutter.__project_slug }}" },
+]
+exclude = ["{{ cookiecutter.__project_slug }}/tests"]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+dirty = true
+style = "pep440"
+bump = true
+
+[tool.poetry-dynamic-versioning.substitution]
+files = [
+    'pyproject.toml',
+    '{{ cookiecutter.__project_slug}}/__init__.py'
+]
+patterns = [
+    "(^\\s+\"version\":\\s*\")[^'\"]*(\")",
+    "(^__version__\\s*(?::.*?)?=\\s*['\"])[^'\"]*(['\"])"
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8, <4.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+hypothesis = "^6.76.0"
+isort = "^5.12.0"
+poethepoet = "^0.20.0"
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+ruff = "^0.0.270"
+yamlfix = "^1.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poe.tasks]
+isort = "isort {{ cookiecutter.__project_slug }}"
+isort-check = "isort -c {{ cookiecutter.__project_slug }}"
+black = "black {{ cookiecutter.__project_slug }}"
+black-check = "black --check {{ cookiecutter.__project_slug }}"
+ruff = "ruff --fix {{ cookiecutter.__project_slug }}"
+ruff-check = "ruff {{ cookiecutter.__project_slug }}"
+quality = ["yamlfix", "isort", "black", "ruff"]
+quality-check = ["yamlfix-check", "isort-check", "black-check", "ruff-check"]
+test = "pytest --doctest-modules {{ cookiecutter.__project_slug }}/tests"
+test_cov = "pytest --doctest-modules --cov={{ cookiecutter.__project_slug }} {{ cookiecutter.__project_slug }}/tests/ --cov-report xml:../cov.xml"
+
+[tool.coverage]
+omit = "{{ cookiecutter.__project_slug }}/tests/*"
+fail_under = 50
+precision = 2
+show_missing = true
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = {{ cookiecutter._format_line_length }}
+
+[tool.black]
+line-length = {{ cookiecutter._format_line_length }}
+
+[tool.ruff]
+line-length = {{ cookiecutter._format_line_length }}
+
+[tool.poe.tasks.yamlfix]
+shell = """
+find . -type f \\( \
+    -iname \\*.yaml -o -iname \\*.yml \
+\\) -exec yamlfix {} \\;
+"""
+
+[tool.poe.tasks.yamlfix-check]
+shell = """
+find . -type f \\( \
+    -iname \\*.yaml -o -iname \\*.yml \
+\\) -exec yamlfix --check {} \\;
+"""

@@ -1,0 +1,16 @@
+comment:
+  layout: "header, diff, flags, components"
+  
+coverage:
+  status:
+    project:
+      default:
+        target: 100%
+        threshold: 50%
+
+component_management:
+  individual_components:
+    - component_id: example_component_id
+      name: example_component_name
+      paths:
+        - {{ cookiecutter.__project_slug }}/example_path
